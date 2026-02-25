@@ -22,7 +22,7 @@ const users = Array.from({ length: 100 }, () => ({
 
 async function resetTable() {
 	await sequelize.authenticate(); // optional but recommended
-	await UserModel.sync(); // CREATE TABLE
+	await UserModel.sync({ force: true }); // CREATE TABLE
 
 	console.log("User table recreated");
 }
