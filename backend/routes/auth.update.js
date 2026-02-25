@@ -11,8 +11,8 @@ const updateHandler = async (req, res, sessionData) => {
 		);
 
 		if (!hasReplacedPassword && !hasReplacedUsername) {
-			res.code(200).send({ message: "no username and password changed" });
-			return res.clearCookie("session", { path: "/" });
+			res.clearCookie("session");
+			return res.code(200).send({ message: "no username and password changed" });
 		}
 		if (hasReplacedPassword && hasReplacedUsername) {
 			res.clearCookie("session");
