@@ -1,13 +1,10 @@
-import { defineConfig } from 'i18next-cli';
+import { defineConfig } from "i18next-cli";
 
 /** @type {import('i18next-cli').I18nextToolkitConfig} */
 export default defineConfig({
-  locales: [
-    "en",
-    "se"
-  ],
-  extract: {
-    input: "src/**/*.{js,jsx,ts,tsx}",
-    output: "public/locales/{{language}}/{{namespace}}.json"
-  }
+	locales: ["en", "se"],
+	extract: {
+		input: "src/**/*.{js,jsx,ts,tsx}",
+		output: "public/locales/{{language}}/{{namespace}}.json",
+	},
 });
