@@ -11,6 +11,7 @@ const loginHandler = async (req, res) => {
 				user_id: id,
 				role,
 				email,
+				username,
 			});
 			res.setCookie("session", jwtToken, { secure: true });
 			return res.code(200).send({
@@ -20,7 +21,7 @@ const loginHandler = async (req, res) => {
 			return res.code(401).send({ message: "Unauthorized" });
 		}
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return res.code(500).send({ message: error.message });
 	}
 };

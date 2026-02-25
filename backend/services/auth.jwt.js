@@ -8,10 +8,11 @@ const AUD = process.env.JWT_AUD || "";
 const getUtcTimestamp = () => Math.floor(Date.now() / 1000);
 const oneDayInSeconds = 86400;
 
-const generateJwt = async ({ user_id, role, email }) => {
+const generateJwt = async ({ user_id, role, email, username }) => {
 	const iat = getUtcTimestamp();
 	const payload = {
 		id: user_id,
+		username: username,
 		email: email,
 		role: role,
 		iss: ISSUER,

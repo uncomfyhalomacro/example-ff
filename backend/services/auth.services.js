@@ -29,7 +29,9 @@ const update = async (id, username, { newUsername, newPassword }) => {
 	}
 
 	// Check if user already exists
-	const user = await UserModel.findOne({ where: { id: id, username: username } });
+	const user = await UserModel.findOne({
+		where: { id: id, username: username },
+	});
 
 	if (!user) {
 		throw new Error("user does not exist");
@@ -38,7 +40,9 @@ const update = async (id, username, { newUsername, newPassword }) => {
 	let hasReplacedPassword = false;
 	let hasReplacedUsername = false;
 	const toReplacePassword = (newPassword ?? "").trim() !== "";
-	const toReplaceUsername = (newUsername ?? "").trim() !== "" && (newUsername ?? "").trim() !== username;
+	const toReplaceUsername =
+		(newUsername ?? "").trim() !== "" &&
+		(newUsername ?? "").trim() !== username;
 
 	if (toReplaceUsername) {
 		await user.update({ username: newUsername });
@@ -54,7 +58,7 @@ const update = async (id, username, { newUsername, newPassword }) => {
 			algorithm: 2,
 		};
 
-		const hashed_password = await hash(password, options);
+		const hashed_password = await hash(newPassword, options);
 		await user.update({ hashed_password: hashed_password });
 		hasReplacedPassword = true;
 	}

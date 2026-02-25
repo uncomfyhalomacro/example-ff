@@ -5,7 +5,7 @@ const registerHandler = async (req, res) => {
 	try {
 		await register(username, password, email, contact_number);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return res.code(500).send({ message: error.message });
 	}
 	return res.code(200).send({ message: "User Created", ok: true });
