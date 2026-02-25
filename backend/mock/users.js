@@ -1,0 +1,52 @@
+import { writeFile } from "node:fs/promises";
+import path from "node:path";
+import { loadEnvFile } from "node:process";
+import { fileURLToPath } from "node:url";
+import { faker } from "@faker-js/faker";
+import { sequelize } from "../database/index.js";
+import UserModel from "../models/UserModel.js";
+import { register } from "../services/auth.services.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+loadEnvFile();
+const PROD = process.env.PROD || "dev";
+
+const users = Array.from({ length: 100 }, () => ({
+	username: faker.internet.username(),
+	contact_number: faker.phone.number(),
+	email: faker.internet.email(),
+	password: faker.internet.password(),
+}));
+
+async function resetTable() {
+	await sequelize.authenticate(); // optional but recommended
+	await UserModel.sync(); // CREATE TABLE
+
+	console.log("User table recreated");
+}
+
+async function generateMockUsers() {
+	console.warn("Dropping user table");
+	const pathToUserJson = `${__dirname}/users.json`;
+	const jsonData = JSON.stringify(users, null, "\t");
+	await writeFile(pathToUserJson, jsonData);
+	const results = await Promise.allSettled(
+		users.map((user) => {
+			return register(
+				user.username,
+				user.password,
+				user.email,
+				user.contact_number,
+			);
+		}),
+	);
+	console.log(results);
+	return results;
+}
+
+if (PROD === "dev") {
+	await resetTable();
+	await generateMockUsers();
+}
