@@ -14,14 +14,17 @@ UserModel.init(
 		username: {
 			type: DataTypes.STRING,
 			allowNull: false,
+			unique: true,
 		},
 		contact_number: {
 			type: DataTypes.STRING,
 			allowNull: false,
+			unique: true,
 		},
 		email: {
 			type: DataTypes.STRING,
 			allowNull: false,
+			unique: true,
 		},
 		hashed_password: {
 			type: DataTypes.STRING,
