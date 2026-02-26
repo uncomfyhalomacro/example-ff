@@ -2,10 +2,15 @@ import fastifyCookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import Fastify from "fastify";
 import { loadEnvFile } from "node:process";
-import handleProtectedWithLogin from "./middleware/protect/login.js";
-import { loginHandler } from "./routes/auth/login.js";
-import { registerHandler } from "./routes/auth/register.js";
-import { updateHandler } from "./routes/auth/update.js";
+import {
+	handleProtectedWithLogin,
+	handleProtectedWithLoginWithRoleCheck,
+} from "./middleware/protect/login.js";
+import { handlerAddProduct } from "./routes/products/add.js";
+import { handlerRemoveProduct } from "./routes/products/remove.js";
+import { handlerUserLogin } from "./routes/auth/login.js";
+import { handlerUserRegister } from "./routes/auth/register.js";
+import { handlerUserUpdate } from "./routes/auth/update.js";
 
 loadEnvFile();
 
@@ -24,17 +29,36 @@ fastify.register(cors, {
 	strictPreflight: true,
 	origin: PROD === "dev" ? "http://localhost:8080" : "",
 	methods: ["GET", "HEAD", "POST", "DELETE", "PUT"],
-	allowedHeaders: ["Content-Type", "Authorization"]
+	allowedHeaders: ["Content-Type", "Authorization"],
 });
 
 fastify.get("/healthz", async (_, resp) => {
-    return resp.code(200).send("OK")
-})
+	return resp.code(200).send("OK");
+});
 
-fastify.post("/auth/register", registerHandler);
-fastify.post("/auth/login", loginHandler);
-fastify.put("/auth/update", async (req, resp) => {
-	await handleProtectedWithLogin(req, resp, updateHandler);
+fastify.post("/products/:user_id", async (req, resp) => {
+	await handleProtectedWithLoginWithRoleCheck(
+		req,
+		resp,
+		"seller",
+		handlerAddProduct,
+	)
+});
+
+fastify.delete("/products/:user_id/:id", async (req, resp) => {
+	await handleProtectedWithLoginWithRoleCheck(
+		req,
+		resp,
+		"seller",
+		handlerRemoveProduct,
+	)
+});
+
+fastify.post("/auth/user/register", handlerUserRegister);
+fastify.post("/auth/user/login", handlerUserLogin);
+fastify.put("/auth/user/update", async (req, resp) => {
+	await handleProtectedWithLogin(req, resp, handlerUserUpdate);
+	return
 });
 
 try {
