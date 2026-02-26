@@ -1,6 +1,6 @@
 import { update } from "../../services/auth/core.js";
 
-const updateHandler = async (req, res, sessionData) => {
+const handlerUserUpdate = async (req, res, sessionData) => {
 	const { newUsername, newPassword } = req.body;
 	try {
 		const { id, username } = sessionData;
@@ -12,7 +12,9 @@ const updateHandler = async (req, res, sessionData) => {
 
 		if (!hasReplacedPassword && !hasReplacedUsername) {
 			res.clearCookie("session");
-			return res.code(200).send({ message: "no username and password changed" });
+			return res
+				.code(200)
+				.send({ message: "no username and password changed" });
 		}
 		if (hasReplacedPassword && hasReplacedUsername) {
 			res.clearCookie("session");
@@ -32,4 +34,4 @@ const updateHandler = async (req, res, sessionData) => {
 	}
 };
 
-export { updateHandler };
+export { handlerUserUpdate };

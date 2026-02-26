@@ -1,6 +1,6 @@
 import { register } from "../../services/auth/core.js";
 
-const registerHandler = async (req, res) => {
+const handlerUserRegister = async (req, res) => {
 	const { username, password, email, contact_number } = req.body;
 	try {
 		await register(username, password, email, contact_number);
@@ -11,4 +11,4 @@ const registerHandler = async (req, res) => {
 	return res.code(200).send({ message: "User Created", ok: true });
 };
 
-export { registerHandler };
+export { handlerUserRegister };

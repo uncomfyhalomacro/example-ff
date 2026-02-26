@@ -1,7 +1,7 @@
 import { login } from "../../services/auth/core.js";
 import { generateJwt } from "../../services/auth/jwt.js";
 
-const loginHandler = async (req, res) => {
+const handlerUserLogin = async (req, res) => {
 	const { username, password } = req.body;
 	try {
 		const { verified, role, id, email } = await login(username, password);
@@ -26,4 +26,4 @@ const loginHandler = async (req, res) => {
 	}
 };
 
-export { loginHandler };
+export { handlerUserLogin };
