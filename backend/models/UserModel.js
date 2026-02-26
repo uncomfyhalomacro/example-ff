@@ -34,6 +34,9 @@ const userModelInit = async () => {
 			role: {
 				type: DataTypes.STRING,
 				allowNull: false,
+				validate: {
+					isIn: [["seller", "admin"]],
+				},
 				defaultValue: "seller",
 			},
 			createdAt: {
