@@ -27,7 +27,7 @@ const productModelInit = async () => {
 				unique: true,
 			},
 			price: {
-				type: DataType.DECIMAL,
+				type: DataTypes.DECIMAL,
 				allowNull: false,
 				validate: {
 					min: 1,
@@ -37,6 +37,9 @@ const productModelInit = async () => {
 			type: {
 				type: DataTypes.STRING,
 				allowNull: true,
+				validate: {
+					isIn: [["product", "service"]],
+				},
 				defaultValue: "product", // or "service"
 			},
 			count: {
