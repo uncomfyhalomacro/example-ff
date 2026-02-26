@@ -42,7 +42,7 @@ fastify.post("/products/:user_id", async (req, resp) => {
 		resp,
 		"seller",
 		handlerAddProduct,
-	)
+	);
 });
 
 fastify.delete("/products/:user_id/:id", async (req, resp) => {
@@ -51,14 +51,14 @@ fastify.delete("/products/:user_id/:id", async (req, resp) => {
 		resp,
 		"seller",
 		handlerRemoveProduct,
-	)
+	);
 });
 
 fastify.post("/auth/user/register", handlerUserRegister);
 fastify.post("/auth/user/login", handlerUserLogin);
 fastify.put("/auth/user/update", async (req, resp) => {
 	await handleProtectedWithLogin(req, resp, handlerUserUpdate);
-	return
+	return;
 });
 
 try {

@@ -37,4 +37,4 @@ const handlerIncrementDecrement = async (req, resp, user_id) => {
 	}
 };
 
-export {  handlerIncrementDecrement };
+export { handlerIncrementDecrement };
