@@ -1,4 +1,4 @@
-import ProductModel from "../../database/ProductModel.js";
+import ProductModel from "../../models/ProductModel.js";
 
 const addProductByUserId = async ({ name, price, type, user_id }) => {
 	if (!name || name.trim() === "") {
