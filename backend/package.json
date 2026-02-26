@@ -6,7 +6,8 @@
 	"main": "index.js",
 	"scripts": {
 		"serve": "node server.js",
-		"mock": "node ./mock/users.js"
+		"mock": "node ./mock/users.js",
+		"mock-request-repl": "node ./mock/requests.js"
 	},
 	"author": "",
 	"license": "ISC",
