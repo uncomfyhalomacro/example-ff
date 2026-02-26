@@ -1,6 +1,6 @@
-import ProductModel from "../database/ProductModel.js";
+import ProductModel from "../../database/ProductModel.js";
 
-const addProduct = async ({ name, price, type, user_id }) => {
+const addProductByUserId = async ({ name, price, type, user_id }) => {
 	if (!name || name.trim() === "") {
 		throw new Error("name is missing");
 	}
@@ -24,7 +24,7 @@ const addProduct = async ({ name, price, type, user_id }) => {
 	});
 };
 
-const incrementProductByIdAndUserId = async (id, user_id, count) => {
+const incrementProductByIdAndUserId = async ({ id, user_id, count }) => {
 	if (!id || id.trim() === "") {
 		throw new Error("id is missing");
 	}
@@ -49,7 +49,7 @@ const incrementProductByIdAndUserId = async (id, user_id, count) => {
 	await product.increment("count", { by: count });
 };
 
-const decrementProductByIdAndUserId = async (id, user_id, count) => {
+const decrementProductByIdAndUserId = async ({ id, user_id, count }) => {
 	if (!id || id.trim() === "") {
 		throw new Error("id is missing");
 	}
@@ -74,7 +74,7 @@ const decrementProductByIdAndUserId = async (id, user_id, count) => {
 	await product.decrement("count", { by: count });
 };
 
-const removeProductByIdAndUserId = async (id, user_id) => {
+const removeProductByIdAndUserId = async ({ id, user_id }) => {
 	if (!id || id.trim() === "") {
 		throw new Error("id is missing");
 	}
@@ -89,7 +89,7 @@ const removeProductByIdAndUserId = async (id, user_id) => {
 	});
 };
 
-const updateProductPriceByIdAndUserId = async (id, user_id, price) => {
+const updateProductPriceByIdAndUserId = async ({ id, user_id, price }) => {
 	if (!id || id.trim() === "") {
 		throw new Error("id is missing");
 	}
@@ -116,7 +116,7 @@ const updateProductPriceByIdAndUserId = async (id, user_id, price) => {
 	});
 };
 
-const updateProductNameByIdAndUserId = async (id, user_id, name) => {
+const updateProductNameByIdAndUserId = async ({ id, user_id, name }) => {
 	if (!id || id.trim() === "") {
 		throw new Error("id is missing");
 	}
@@ -141,7 +141,7 @@ const updateProductNameByIdAndUserId = async (id, user_id, name) => {
 };
 
 export {
-	addProduct,
+	addProductByUserId,
 	removeProductByIdAndUserId,
 	updateProductNameByIdAndUserId,
 	updateProductPriceByIdAndUserId,
