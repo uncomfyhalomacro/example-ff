@@ -12,7 +12,13 @@ const handlerUserLogin = async (req, res) => {
 				email,
 				username,
 			});
-			res.setCookie("session", jwtToken, { secure: true });
+			res.setCookie("session", jwtToken, {
+				secure: true,
+				httpOnly: true,
+				sameSite: "Strict",
+				maxAge: 3600 * 1000,
+			});
+			res.headers("content-type", "application/json");
 			return res.code(200).send({
 				email,
 				username,
