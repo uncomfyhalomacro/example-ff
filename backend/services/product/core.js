@@ -81,7 +81,16 @@ const removeProductByIdAndUserId = async ({ id, user_id }) => {
 	if (!user_id || user_id.trim() === "") {
 		throw new Error("user_id is missing");
 	}
-	await ProductModel.destroy({
+	const product = await ProductModel.findOne({
+		where: {
+			id: id,
+			user_id: user_id,
+		},
+	});
+	if (!product) {
+		throw new Error("product does not exist");
+	}
+	await product.destroy({
 		where: {
 			id: id,
 			user_id: user_id,
