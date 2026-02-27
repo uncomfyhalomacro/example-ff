@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
 import "./App.css";
 import LoginPage from "./pages/LoginPage.jsx";
-import { fetchUserProfile } from "./api/auth/profile.js";
+import { useAuth } from "./features/auth/hooks/useAuth.jsx";
 
 const lngs = {
 	en: { nativeName: "English" },
@@ -9,23 +8,7 @@ const lngs = {
 };
 
 function App() {
-	const [user, setUser] = useState(null);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		const checkAuth = async () => {
-			try {
-				const user = await fetchUserProfile();
-				setUser(user);
-			} catch (error) {
-				console.error(error.message);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		checkAuth();
-	}, []);
+	const { user, setUser, loading } = useAuth();
 
 	if (loading) {
 		return <div>Loading...</div>;
