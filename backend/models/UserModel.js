@@ -24,6 +24,9 @@ const userModelInit = async () => {
 			},
 			email: {
 				type: DataTypes.STRING,
+				validate: {
+					isEmail: true,
+				},
 				allowNull: false,
 				unique: true,
 			},
