@@ -9,7 +9,7 @@ const addProductByUserId = async ({ name, price, type, user_id }) => {
 		throw new Error("price is missing");
 	}
 	const cprice = Number(price);
-	if (!cprice === 0) {
+	if (cprice === 0) {
 		throw new Error("price cannot be zero");
 	}
 	if (!type || type.trim() === "") {
@@ -124,57 +124,77 @@ const removeProductByIdAndUserId = async ({ id, user_id }) => {
 	});
 };
 
-const updateProductPriceByIdAndUserId = async ({ id, user_id, price }) => {
-	if (!id || id.trim() === "") {
-		throw new Error("id is missing");
+const assertNonEmptyString = (value, field) => {
+	if (!value?.trim()) {
+		throw new Error(`${field} is missing`);
 	}
-	if (!user_id || user_id.trim() === "") {
-		throw new Error("user_id is missing");
-	}
-	if (!price) {
-		throw new Error("price is missing");
-	}
-	const cprice = Number(price);
-	if (!cprice === 0) {
-		throw new Error("price cannot be zero");
-	}
-	if (!isSafeNumber(cprice) || !Number.isSafeInteger(cprice))
-		throw new Error("price number has exceeded safe limits");
-	const product = await ProductModel.findOne({
-		where: {
-			id: id,
-			user_id: user_id,
-		},
-	});
-	if (!product) {
+};
+
+const updateProductFieldByIdAndUserId = async ({
+	id,
+	user_id,
+	field,
+	value,
+}) => {
+	assertNonEmptyString(id, "id");
+	assertNonEmptyString(user_id, "user_id");
+
+	const [updatedRows] = await ProductModel.update(
+		{ [field]: value },
+		{ where: { id, user_id } },
+	);
+
+	if (updatedRows === 0) {
 		throw new Error("product does not exist");
 	}
-	await product.update({
-		price: cprice,
-	});
 };
 
 const updateProductNameByIdAndUserId = async ({ id, user_id, name }) => {
-	if (!id || id.trim() === "") {
-		throw new Error("id is missing");
-	}
-	if (!user_id || user_id.trim() === "") {
-		throw new Error("user_id is missing");
-	}
-	if (!name || name.trim() === "") {
-		throw new Error("name is missing");
-	}
-	const product = await ProductModel.findOne({
-		where: {
-			id: id,
-			user_id: user_id,
-		},
+	assertNonEmptyString(name, "name");
+
+	await updateProductFieldByIdAndUserId({
+		id,
+		user_id,
+		field: "name",
+		value: name.trim(),
 	});
-	if (!product) {
-		throw new Error("product does not exist");
+};
+
+const updateProductTypeByIdAndUserId = async ({ id, user_id, type }) => {
+	assertNonEmptyString(type, "type");
+
+	await updateProductFieldByIdAndUserId({
+		id,
+		user_id,
+		field: "type",
+		value: type.trim(),
+	});
+};
+
+const updateProductPriceByIdAndUserId = async ({ id, user_id, price }) => {
+	if (price === undefined || price === null) {
+		throw new Error("price is missing");
 	}
-	await product.update({
-		name: name,
+
+	const cprice = Number(price);
+
+	if (!Number.isFinite(cprice)) {
+		throw new Error("price must be a valid number");
+	}
+
+	if (cprice === 0) {
+		throw new Error("price cannot be zero");
+	}
+
+	if (!Number.isSafeInteger(cprice)) {
+		throw new Error("price number has exceeded safe limits");
+	}
+
+	await updateProductFieldByIdAndUserId({
+		id,
+		user_id,
+		field: "price",
+		value: cprice,
 	});
 };
 
@@ -185,4 +205,5 @@ export {
 	removeProductByIdAndUserId,
 	updateProductNameByIdAndUserId,
 	updateProductPriceByIdAndUserId,
+	updateProductTypeByIdAndUserId,
 };
