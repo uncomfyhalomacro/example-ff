@@ -21,22 +21,18 @@ async function handleProtectedWithLoginWithRoleCheck(
 	const sessionData = await verifyJwt({ token: request.cookies.session });
 	const role = sessionData.role ?? "unknown";
 	try {
-		roleCheck(role)
-		roleCheck(targetRole)
+		roleCheck(role);
+		roleCheck(targetRole);
 		// Use role afterwards
-		if (role === targetRole) {
-			if (targetRole === "seller") {
-				if (sessionData.id !== request.params.user_id) {
-					response.code(301);
-					return response.send({
-						message: "you are not allowed to operate on this product",
-					});
-				}
-				await handlerFunc(request, response);
-			}
-			if (targetRole === "admin") await handlerFunc(request, response);
-			return;
+		if (
+			role === targetRole &&
+			targetRole === "seller" &&
+			sessionData.id === request.params.user_id
+		) {
+			return await handlerFunc(request, response);
 		}
+
+		if (targetRole === "admin") return await handlerFunc(request, response);
 		response.code(301);
 		return response.send({
 			message: "you are not allowed to operate on this product",
