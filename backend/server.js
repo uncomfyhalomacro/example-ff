@@ -12,6 +12,7 @@ import { handlerIncrementDecrement } from "./routes/products/increment-decrement
 import { handlerUserLogin } from "./routes/auth/login.js";
 import { handlerUserRegister } from "./routes/auth/register.js";
 import { handlerUserUpdate } from "./routes/auth/update.js";
+import { handlerUpdateProductInfo } from "./routes/products/update.js";
 
 loadEnvFile();
 
@@ -29,7 +30,7 @@ fastify.register(fastifyCookie, {
 fastify.register(cors, {
 	strictPreflight: true,
 	origin: PROD === "dev" ? "http://localhost:8080" : "",
-	methods: ["GET", "HEAD", "POST", "DELETE", "PUT"],
+	methods: ["GET", "HEAD", "POST", "DELETE", "PUT", "PATCH"],
 	allowedHeaders: ["Content-Type", "Authorization"],
 });
 
@@ -59,6 +60,16 @@ fastify.put(
 		);
 	},
 );
+
+fastify.patch("/:role/products/:user_id/:id", async (req, resp) => {
+	const { role } = req.params;
+	await handleProtectedWithLoginWithRoleCheck(
+		req,
+		resp,
+		role ?? "unknown",
+		handlerUpdateProductInfo,
+	);
+});
 
 fastify.delete("/:role/products/:user_id/:id", async (req, resp) => {
 	const { role } = req.params;
