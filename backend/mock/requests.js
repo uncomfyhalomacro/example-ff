@@ -24,7 +24,11 @@ async function main() {
 		let data;
 		let contentType = "";
 
-		if (method.toUpperCase() === "POST" || method.toUpperCase() === "PUT") {
+		if (
+			method.toUpperCase() === "POST" ||
+			method.toUpperCase() === "PUT" ||
+			method.toUpperCase() === "PATCH"
+		) {
 			data = await ask("Provide data: ");
 			contentType = await ask("Provide content type: ");
 		}
@@ -38,7 +42,11 @@ async function main() {
 			.join("; ");
 		if (cookieHeader) headers.Cookie = cookieHeader;
 
-		if (method.toUpperCase() === "POST" || method.toUpperCase() === "PUT") {
+		if (
+			method.toUpperCase() === "POST" ||
+			method.toUpperCase() === "PUT" ||
+			method.toUpperCase() === "PATCH"
+		) {
 			headers["content-type"] =
 				contentType.trim() === "" ? "text/plain; charset=utf-8" : contentType;
 		}
