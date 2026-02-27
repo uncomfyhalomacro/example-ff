@@ -6,7 +6,6 @@ const handlerUserLogin = async (req, res) => {
 	try {
 		const { verified, role, id, email } = await login(username, password);
 		if (verified) {
-			// do something here
 			const jwtToken = await generateJwt({
 				user_id: id,
 				role,
