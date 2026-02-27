@@ -46,7 +46,13 @@ const incrementProductByIdAndUserId = async ({ id, user_id, count }) => {
 	if (!product) {
 		throw new Error("product does not exist");
 	}
-	await product.increment("count", { by: count });
+	const initialTotal = BigInt(product.count) + BigInt(count);
+	if (initialTotal < 0) {
+		throw new Error(
+			`product count should not be negative. aborting increment operation.`,
+		);
+	}
+	await product.increment("count", { by: BigInt(count) });
 };
 
 const decrementProductByIdAndUserId = async ({ id, user_id, count }) => {
@@ -71,7 +77,13 @@ const decrementProductByIdAndUserId = async ({ id, user_id, count }) => {
 	if (!product) {
 		throw new Error("product does not exist");
 	}
-	await product.decrement("count", { by: count });
+	const initialTotal = BigInt(product.count) - BigInt(count);
+	if (initialTotal < 0) {
+		throw new Error(
+			`product count should not be negative. aborting decrement operation.`,
+		);
+	}
+	await product.decrement("count", { by: BigInt(count) });
 };
 
 const removeProductByIdAndUserId = async ({ id, user_id }) => {
@@ -151,9 +163,9 @@ const updateProductNameByIdAndUserId = async ({ id, user_id, name }) => {
 
 export {
 	addProductByUserId,
+	decrementProductByIdAndUserId,
+	incrementProductByIdAndUserId,
 	removeProductByIdAndUserId,
 	updateProductNameByIdAndUserId,
 	updateProductPriceByIdAndUserId,
-	decrementProductByIdAndUserId,
-	incrementProductByIdAndUserId,
 };
