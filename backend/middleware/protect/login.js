@@ -29,10 +29,14 @@ async function handleProtectedWithLoginWithRoleCheck(
 			targetRole === "seller" &&
 			sessionData.id === request.params.user_id
 		) {
-			return await handlerFunc(request, response);
+			await handlerFunc(request, response);
+			return;
 		}
 
-		if (targetRole === "admin") return await handlerFunc(request, response);
+		if (role === "admin") {  // role of the logged in user
+			await handlerFunc(request, response);
+			return
+		}
 		response.code(301);
 		return response.send({
 			message: "you are not allowed to operate on this product",
