@@ -33,9 +33,10 @@ async function handleProtectedWithLoginWithRoleCheck(
 			return;
 		}
 
-		if (role === "admin") {  // role of the logged in user
+		if (role === "admin") {
+			// role of the logged in user
 			await handlerFunc(request, response);
-			return
+			return;
 		}
 		response.code(301);
 		return response.send({

@@ -30,9 +30,11 @@ const generateJwt = async ({ user_id, role, email, username }) => {
 };
 
 const verifyJwt = async ({ token }) => {
-    	if (token === undefined) {
-        	throw new Error("token is missing. user might need to login first or no session cookie is present. unauthorized to progress")
-    	}
+	if (token === undefined) {
+		throw new Error(
+			"token is missing. user might need to login first or no session cookie is present. unauthorized to progress",
+		);
+	}
 	const validation = { algorithms: ["HS384"] }; // Default already validates expiry
 	const decodedToken = await verify(token, SECRET, validation);
 	if (decodedToken === undefined || decodedToken === null) {
