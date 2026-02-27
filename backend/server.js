@@ -8,6 +8,7 @@ import {
 } from "./middleware/protect/login.js";
 import { handlerAddProduct } from "./routes/products/add.js";
 import { handlerRemoveProduct } from "./routes/products/remove.js";
+import { handlerIncrementDecrement } from "./routes/products/increment-decrement.js";
 import { handlerUserLogin } from "./routes/auth/login.js";
 import { handlerUserRegister } from "./routes/auth/register.js";
 import { handlerUserUpdate } from "./routes/auth/update.js";
@@ -45,6 +46,19 @@ fastify.post("/:role/products/:user_id", async (req, resp) => {
 		handlerAddProduct,
 	);
 });
+
+fastify.put(
+	"/:role/products/:user_id/:id/:inc_dec_opt/:rawValue",
+	async (req, resp) => {
+		const { role } = req.params;
+		await handleProtectedWithLoginWithRoleCheck(
+			req,
+			resp,
+			role ?? "unknown",
+			handlerIncrementDecrement,
+		);
+	},
+);
 
 fastify.delete("/:role/products/:user_id/:id", async (req, resp) => {
 	const { role } = req.params;
