@@ -1,4 +1,4 @@
-const roleCheck = async (role) => {
+const roleCheck = (role) => {
 	switch (role) {
 		case "admin":
 			return;
