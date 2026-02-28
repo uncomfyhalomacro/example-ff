@@ -18,7 +18,6 @@ const handlerUserLogin = async (req, res) => {
 				sameSite: "Strict",
 				maxAge: 3600 * 1000,
 			});
-			res.headers("content-type", "application/json");
 			return res.code(200).send({
 				email,
 				username,
