@@ -1,6 +1,7 @@
 import { hash, verify } from "@node-rs/argon2";
 import { randomBytes } from "node:crypto";
 import UserModel from "../../models/UserModel.js";
+import { insertCountryCodeFromContactNumber } from "../../helpers/insertCountryCodeFromContactNumber.js";
 
 const login = async (username, password) => {
 	if (!username || username.trim() === "") {
@@ -20,7 +21,11 @@ const login = async (username, password) => {
 	return { verified, role: user.role, id: user.id, email: user.email };
 };
 
-const update = async (id, username, { newUsername, newPassword }) => {
+const update = async (
+	id,
+	username,
+	{ newUsername, newPassword, newContactNumber, newEmail },
+) => {
 	if (!id || id.trim() === "") {
 		throw new Error("user id is missing");
 	}
@@ -39,13 +44,20 @@ const update = async (id, username, { newUsername, newPassword }) => {
 
 	let hasReplacedPassword = false;
 	let hasReplacedUsername = false;
+	let hasReplacedEmail = false;
+	let hasReplacedContactNumber = false;
 	const toReplacePassword = (newPassword ?? "").trim() !== "";
 	const toReplaceUsername =
 		(newUsername ?? "").trim() !== "" &&
 		(newUsername ?? "").trim() !== username;
+	const toReplaceEmail =
+		(newEmail ?? "").trim() !== "" && (newEmail ?? "").trim() !== user.email;
+	const toReplaceContactNumber =
+		(newContactNumber ?? "") !== "" &&
+		(newContactNumber ?? "").trim() !== user.contact_number;
 
 	if (toReplaceUsername) {
-		await user.update({ username: newUsername });
+		user.username = newUsername;
 		hasReplacedUsername = true;
 	}
 	if (toReplacePassword) {
@@ -59,13 +71,29 @@ const update = async (id, username, { newUsername, newPassword }) => {
 		};
 
 		const hashed_password = await hash(newPassword, options);
-		await user.update({ hashed_password: hashed_password, updatedAt: new Date()});
+		user.hashed_password = hashed_password;
 		hasReplacedPassword = true;
 	}
-	return { hasReplacedPassword, hasReplacedUsername };
+	if (toReplaceContactNumber) {
+		user.contact_number = newContactNumber;
+		insertCountryCodeFromContactNumber(user);
+		hasReplacedContactNumber = true;
+	}
+	if (toReplaceEmail) {
+		user.email = newEmail;
+		hasReplacedEmail = true;
+	}
+	await user.save();
+	return {
+		hasReplacedPassword,
+		hasReplacedUsername,
+		hasReplacedContactNumber,
+		hasReplacedEmail,
+	};
 };
 
 const register = async (username, password, email, contact_number) => {
+	const createParams = {};
 	if (!username || username.trim() === "") {
 		throw new Error("username is missing");
 	}
@@ -97,13 +125,12 @@ const register = async (username, password, email, contact_number) => {
 
 	const hashed_password = await hash(password, options);
 
-	// Create new user
-	user = await UserModel.create({
-		username: username,
-		hashed_password: hashed_password,
-		email: email,
-		contact_number: contact_number,
-		salt: salt.toString(),
-	});
+	createParams.username = username;
+	createParams.hashed_password = hashed_password;
+	createParams.email = email;
+	createParams.contact_number = contact_number;
+	insertCountryCodeFromContactNumber(createParams, undefined);
+
+	await UserModel.create(createParams);
 };
 export { login, register, update };
