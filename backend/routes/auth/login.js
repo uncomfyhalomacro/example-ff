@@ -16,9 +16,9 @@ const handlerUserLogin = async (req, res) => {
 			return res
 				.setCookie("session", jwtToken, {
 					path: "/",
-					secure: PROD === "prod",
+					secure: true,
 					httpOnly: true,
-					sameSite: PROD === "prod" ? "Strict" : "Lax",
+					sameSite: true,
 					maxAge: 3600 * 1000,
 				})
 				.code(200)
