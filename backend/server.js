@@ -1,7 +1,6 @@
 import fastifyCookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import Fastify from "fastify";
-import { loadEnvFile } from "node:process";
 import {
 	handleProtectedWithLogin,
 	handleProtectedWithLoginWithRoleCheck,
@@ -18,12 +17,8 @@ import { handlerIncrementDecrement } from "./routes/products/increment-decrement
 import { handlerRemoveProduct } from "./routes/products/remove.js";
 import { handlerUpdateProductInfo } from "./routes/products/update.js";
 import { verifyJwt } from "./services/auth/jwt.js";
-import { PROD } from "./env.js";
+import { PROD, PORT, COOKIE_SECRET } from "./env.js";
 
-loadEnvFile();
-
-const PORT = process.env.PORT || 3000;
-const COOKIE_SECRET = process.env.COOKIE_SECRET || "cookie-secret";
 const fastify = Fastify({
 	logger: true,
 });

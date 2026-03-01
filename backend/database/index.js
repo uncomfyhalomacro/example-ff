@@ -1,11 +1,6 @@
-import { loadEnvFile } from "node:process";
 import { Sequelize } from "sequelize";
+import { PG_USER, PG_DB, PG_PASSWORD, PROD } from "../env.js";
 
-loadEnvFile();
-const PROD = process.env.PROD || "prod";
-const PG_DB = process.env.PG_DB || "db";
-const PG_USER = process.env.PG_USER || "";
-const PG_PASSWORD = process.env.PG_PASSWORD || "";
 const sequelize = new Sequelize(PG_DB, PG_USER, PG_PASSWORD, {
 	host: "localhost",
 	dialect: "postgres",
